@@ -26,7 +26,17 @@ function beforeUpload(file) {
 function Title(props) {
   return (
     <div className="titleWrap">
-      <h3>Mục {props.index}</h3>
+      <div className="delWrap">
+        <h3>Mục {props.index}</h3>
+        <Button
+          type="danger"
+          style={{ marginLeft: 16 }}
+          onClick={props.onDelete}
+        >
+          Xóa mục
+        </Button>
+      </div>
+      <br />
       <Input placeholder="Đề mục" allowClear onChange={() => {}} />
       <br />
       <TextArea placeholder="Nội dung" allowClear onChange={() => {}} />
@@ -64,24 +74,22 @@ function PostItem() {
   }
 
   const addSection = () => {
-    const index = sections.length + 1;
-    // sections.push({
-    //   index,
-    //   title: "",
-    //   content: "",
-    //   ytbURL: "",
-    //   pictureLinks: []
-    // });
     setSections([
       ...sections,
       {
-        index,
         title: "",
         content: "",
         ytbURL: "",
         pictureLinks: []
       }
     ]);
+  };
+
+  const deleteSection = index => {
+    sections.splice(index, 1);
+    sections.forEach((item, index) => (item.index = index + 1));
+    setSections([sections]);
+    console.log(sections);
   };
 
   const uploadButton = (
@@ -134,10 +142,10 @@ function PostItem() {
         Thêm mục
       </Button>
       <br />
-      {sections.map(item => (
-        <div key={item.index}>
+      {sections.map((item, index) => (
+        <div key={index}>
           <br />
-          <Title index={item.index} />
+          <Title index={index + 1} onDelete={() => deleteSection(index)} />
         </div>
       ))}
     </div>

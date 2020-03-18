@@ -23,11 +23,17 @@
 .btnWrap {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .titleWrap {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
+}
+
+.delWrap {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
 }
