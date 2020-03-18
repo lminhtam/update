@@ -1,7 +1,7 @@
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Input, message, Upload } from "antd";
 import React, { useState } from "react";
 import "../App.css";
-import { Input, Upload, message, Button } from "antd";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import PicturesWall from "./pictureWall";
 const { TextArea } = Input;
 
