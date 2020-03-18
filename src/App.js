@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
-import { Card } from "antd";
+import { Card, Button } from "antd";
+import PostItem from "./component/postItem";
 const { Meta } = Card;
 
 const data = [
@@ -25,18 +26,28 @@ function App() {
   return (
     <div className="App">
       <div className="leftHalf">
-        {data.map(item => (
-          <Card
-            style={{ width: 300 }}
-            cover={
-              <img alt="example" src={item.cover} width="300" height="150" />
-            }
-          >
-            <Meta title={item.title} description={item.description} />
-          </Card>
+        {data.map((item, index) => (
+          <div key={index}>
+            <Card
+              style={{ width: "100%" }}
+              cover={
+                <img alt="example" src={item.cover} width="100%" height="150" />
+              }
+            >
+              <Meta title={item.title} description={item.description} />
+            </Card>
+            <br />
+            <Button type="primary" block>
+              Sửa
+            </Button>
+            <br />
+            <br />
+          </div>
         ))}
       </div>
-      <div className="rightHalf"></div>
+      <div className="rightHalf">
+        <PostItem />
+      </div>
     </div>
   );
 }
