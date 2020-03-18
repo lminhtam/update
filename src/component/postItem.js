@@ -3,6 +3,7 @@ import { Button, Input, message, Upload } from "antd";
 import React, { useState } from "react";
 import "../App.css";
 import PicturesWall from "./pictureWall";
+import firebase from "firebase";
 const { TextArea } = Input;
 
 function getBase64(img, callback) {
@@ -51,7 +52,7 @@ function Title(props) {
   );
 }
 
-function PostItem() {
+function PostItem(props) {
   const [imageUrl, setImageURL] = useState("");
   const [loading, setLoading] = useState(false);
   const [postTitle, setPostTitle] = useState("");
@@ -89,7 +90,19 @@ function PostItem() {
     sections.splice(index, 1);
     sections.forEach((item, index) => (item.index = index + 1));
     setSections([sections]);
-    console.log(sections);
+  };
+
+  const savePost = () => {
+    firebase
+      .database()
+      .ref('posts')
+      .child(props.postIndex)
+      .set({
+        postTitle: postTitle,
+        coverURL: coverURL,
+        description: description,
+        sections: sections
+      });
   };
 
   const uploadButton = (
@@ -101,17 +114,11 @@ function PostItem() {
 
   return (
     <div>
-      <div className="btnWrap">
-        <Button type="primary">Thêm mới</Button>
-        <Button type="primary" style={{ marginLeft: 16 }}>
-          Lưu
-        </Button>
-      </div>
       <br />
       <Input
         placeholder="Tiêu đề"
         allowClear
-        onChange={text => setPostTitle(text)}
+        onChange={e => setPostTitle(e.target.value)}
       />
       <br />
       <br />
@@ -134,7 +141,7 @@ function PostItem() {
       <TextArea
         placeholder="Mô tả"
         allowClear
-        onChange={text => setDescription(text)}
+        onChange={e => setDescription(e.target.value)}
       />
       <br />
       <br />
@@ -148,6 +155,11 @@ function PostItem() {
           <Title index={index + 1} onDelete={() => deleteSection(index)} />
         </div>
       ))}
+      <br />
+      <br />
+      <Button type="primary" onClick={() => savePost()}>
+        Lưu
+      </Button>
     </div>
   );
 }
