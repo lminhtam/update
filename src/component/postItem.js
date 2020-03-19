@@ -1,132 +1,200 @@
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Input, message, Upload } from "antd";
-import React, { useState } from "react";
+import { Button, Input } from "antd";
+import firebase from "firebase";
+import React, { useEffect, useState } from "react";
 import "../App.css";
-import PicturesWall from "./pictureWall";
+import { CONTENT } from "../constants/constants";
+import UploadImage from "./uploadImage";
 const { TextArea } = Input;
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
+function RenderContent(props) {
+  const [content, setContent] = useState(props.item.content);
 
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
+  const onChangeContent = text => {
+    setContent(text);
+    props.item.content = text;
+  };
+
+  switch (props.item.type) {
+    case CONTENT.CONTENT:
+      return (
+        <TextArea
+          placeholder="Nội dung"
+          allowClear
+          value={content}
+          onChange={e => onChangeContent(e.target.value)}
+        />
+      );
+    case CONTENT.QUOTE:
+      return (
+        <TextArea
+          placeholder="Quote"
+          allowClear
+          value={content}
+          onChange={e => onChangeContent(e.target.value)}
+        />
+      );
+    case CONTENT.YTB:
+      return (
+        <Input
+          placeholder="Link youtube"
+          allowClear
+          value={content}
+          onChange={e => onChangeContent(e.target.value)}
+        />
+      );
+    case CONTENT.IMAGE:
+      return (
+        <UploadImage url={props.item.content} onSetURL={onChangeContent} />
+      );
+    default:
+      return <div />;
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
 }
 
 function Title(props) {
+  const { inside } = props.item;
+  const [title, setTitle] = useState(props.item.title);
+
+  const onChangeTitle = text => {
+    setTitle(text);
+    props.item.title = text;
+  };
+
   return (
     <div className="titleWrap">
-      <h3>Mục {props.index}</h3>
-      <Input placeholder="Đề mục" allowClear onChange={() => {}} />
+      <div className="delWrap">
+        <h3>Mục {props.index}</h3>
+        <Button
+          type="danger"
+          style={{ marginLeft: 16 }}
+          onClick={props.onDelete}
+        >
+          Xóa mục
+        </Button>
+      </div>
       <br />
-      <TextArea placeholder="Nội dung" allowClear onChange={() => {}} />
+      <div className="btnWrap">
+        <Button
+          className="btnStyle"
+          type="primary"
+          onClick={() => props.onAddItem(CONTENT.CONTENT, props.index - 1)}
+        >
+          Thêm nội dung
+        </Button>
+        <Button
+          className="btnStyle"
+          type="primary"
+          onClick={() => props.onAddItem(CONTENT.QUOTE, props.index - 1)}
+        >
+          Thêm quote
+        </Button>
+        <Button
+          className="btnStyle"
+          type="primary"
+          onClick={() => props.onAddItem(CONTENT.IMAGE, props.index - 1)}
+        >
+          Thêm hình
+        </Button>
+        <Button
+          className="btnStyle"
+          type="primary"
+          onClick={() => props.onAddItem(CONTENT.YTB, props.index - 1)}
+        >
+          Thêm video
+        </Button>
+      </div>
       <br />
-      <Input placeholder="Quote nếu có" allowClear onChange={() => {}} />
+      <Input
+        placeholder="Đề mục (không có bỏ qua, không cần đánh số)"
+        allowClear
+        value={title}
+        onChange={e => onChangeTitle(e.target.value)}
+      />
       <br />
-      <Input placeholder="Link youtube nếu có" allowClear onChange={() => {}} />
-      <br />
-      <h4>Hình cho mục này:</h4>
-      <PicturesWall />
+      {inside &&
+        inside.length > 0 &&
+        inside.map((item, index) => (
+          <div key={index}>
+            <RenderContent item={item} />
+            <br />
+            <br />
+          </div>
+        ))}
     </div>
   );
 }
 
-function PostItem() {
-  const [imageUrl, setImageURL] = useState("");
-  const [loading, setLoading] = useState(false);
+function PostItem(props) {
+  const { postItem } = props;
   const [postTitle, setPostTitle] = useState("");
   const [coverURL, setCoverURL] = useState("");
   const [description, setDescription] = useState("");
   const [sections, setSections] = useState([]);
 
-  function handleChange(info) {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => {
-        setLoading(false);
-        setImageURL(imageUrl);
-      });
-    }
-  }
+  useEffect(() => {
+    setPostTitle(postItem.postTitle);
+    setCoverURL(postItem.cover);
+    setDescription(postItem.description);
+    setSections(postItem.sections || []);
+  }, [postItem]);
 
   const addSection = () => {
-    const index = sections.length + 1;
-    // sections.push({
-    //   index,
-    //   title: "",
-    //   content: "",
-    //   ytbURL: "",
-    //   pictureLinks: []
-    // });
     setSections([
       ...sections,
       {
-        index,
         title: "",
-        content: "",
-        ytbURL: "",
-        pictureLinks: []
+        inside: [{ type: "CONTENT", content: "" }]
       }
     ]);
   };
 
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div className="ant-upload-text">Upload</div>
-    </div>
-  );
+  const deleteSection = index => {
+    sections.splice(index, 1);
+    setSections([...sections]);
+  };
+
+  const addItem = (type, index) => {
+    sections[index].inside = [...sections[index].inside, { type, content: "" }];
+    setSections([...sections]);
+  };
+
+  const onSetCoverURL = url => {
+    setCoverURL(url);
+  };
+
+  const savePost = () => {
+    console.log(coverURL);
+    const today = new Date();
+    firebase
+      .database()
+      .ref("posts")
+      .child(props.postIndex)
+      .set({
+        postTitle: postTitle || "",
+        coverURL: coverURL || "",
+        description: description || "",
+        sections: sections || [],
+        modifiedAt: today
+      });
+  };
 
   return (
     <div>
-      <div className="btnWrap">
-        <Button type="primary">Thêm mới</Button>
-        <Button type="primary" style={{ marginLeft: 16 }}>
-          Lưu
-        </Button>
-      </div>
-      <br />
       <Input
         placeholder="Tiêu đề"
         allowClear
-        onChange={text => setPostTitle(text)}
+        value={postTitle}
+        onChange={e => setPostTitle(e.target.value)}
       />
       <br />
       <br />
-      <Upload
-        name="avatar"
-        listType="picture-card"
-        className="avatar-uploader"
-        showUploadList={true}
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
-      >
-        {imageUrl ? (
-          <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-        ) : (
-          uploadButton
-        )}
-      </Upload>
+      <UploadImage url={postItem.coverURL} onSetURL={onSetCoverURL} />
       <br />
       <TextArea
         placeholder="Mô tả"
         allowClear
-        onChange={text => setDescription(text)}
+        value={description}
+        onChange={e => setDescription(e.target.value)}
       />
       <br />
       <br />
@@ -134,12 +202,23 @@ function PostItem() {
         Thêm mục
       </Button>
       <br />
-      {sections.map(item => (
-        <div key={item.index}>
-          <br />
-          <Title index={item.index} />
-        </div>
-      ))}
+      <br />
+      {sections &&
+        sections.length > 0 &&
+        sections.map((item, index) => (
+          <div key={index}>
+            <br />
+            <Title
+              index={index + 1}
+              item={item}
+              onAddItem={addItem}
+              onDelete={() => deleteSection(index)}
+            />
+          </div>
+        ))}
+      <Button type="primary" onClick={() => savePost()}>
+        Lưu
+      </Button>
     </div>
   );
 }

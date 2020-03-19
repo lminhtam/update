@@ -1,9 +1,11 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .App {
   text-align: center;
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .leftHalf {
@@ -23,11 +25,78 @@
 .btnWrap {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .titleWrap {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
+}
+
+.delWrap {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.btnStyle {
+  width: 9em;
+  margin: 0.3em;
+}
+
+div {
+  width: 100%;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.paragraph {
+  width: 70%;
+  font-size: medium;
+  font-weight: 400;
+  color: black;
+  align-self: center;
+}
+
+.postTitle {
+  width: 80%;
+  font-size: 1.5em;
+  font-weight: 800;
+  color: black;
+  margin-top: 1em;
+  text-align: center;
+}
+
+.description {
+  width: 80%;
+  font-size: 1em;
+  font-weight: 40;
+  color: gray;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+.sectionTitle {
+  width: 70%;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: black;
+  margin-top: 1em;
+  text-align: center;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

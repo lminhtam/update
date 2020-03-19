@@ -1,54 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import { HashRouter as Router, Route } from "react-router-dom";
 import "./App.css";
-import { Card, Button } from "antd";
-import PostItem from "./component/postItem";
-const { Meta } = Card;
-
-const data = [
-  {
-    title: "AAAA",
-    cover: "https://nguoinoitieng.tv/images/nnt/96/0/bby1.jpg",
-    description: "BBBBBBBB fnkjskfjkjf ksnfknvkjr jnkncue"
-  },
-  {
-    title: "AAAA",
-    cover: "https://nguoinoitieng.tv/images/nnt/96/0/bby1.jpg",
-    description: "BBBBBBBB fnkjskfjkjf ksnfknvkjr jnkncue"
-  },
-  {
-    title: "AAAA",
-    cover: "https://nguoinoitieng.tv/images/nnt/96/0/bby1.jpg",
-    description: "BBBBBBBB fnkjskfjkjf ksnfknvkjr jnkncue"
-  }
-];
+import Post from "./post";
+import SetPost from "./setPost";
 
 function App() {
+  const [index, setIndex] = useState(0);
   return (
-    <div className="App">
-      <div className="leftHalf">
-        {data.map((item, index) => (
-          <div key={index}>
-            <Card
-              style={{ width: "100%" }}
-              cover={
-                <img alt="example" src={item.cover} width="100%" height="150" />
-              }
-            >
-              <Meta title={item.title} description={item.description} />
-            </Card>
-            <br />
-            <Button type="primary" block>
-              Sửa
-            </Button>
-            <br />
-            <br />
-          </div>
-        ))}
+    <Router>
+      <div>
+        <Route exact path="/">
+          <SetPost onLeadToPost={postIndex => setIndex(postIndex)} />
+        </Route>
+        <Route path={`/${index}`}>
+          <Post index={index} />
+        </Route>
       </div>
-      <div className="rightHalf">
-        <PostItem />
-      </div>
-    </div>
+    </Router>
   );
 }
 
