@@ -1,4 +1,4 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .App {
   text-align: center;
@@ -53,6 +53,48 @@ div {
 }
 
 .post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.paragraph {
+  width: 70%;
+  font-size: medium;
+  font-weight: 400;
+  color: black;
+  align-self: center;
+}
+
+.postTitle {
+  width: 80%;
+  font-size: 1.5em;
+  font-weight: 800;
+  color: black;
+  margin-top: 1em;
+  text-align: center;
+}
+
+.description {
+  width: 80%;
+  font-size: 1em;
+  font-weight: 40;
+  color: gray;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+.sectionTitle {
+  width: 70%;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: black;
+  margin-top: 1em;
+  text-align: center;
+}
+
+.section {
   display: flex;
   flex-direction: column;
   justify-content: center;

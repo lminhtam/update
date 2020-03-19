@@ -1,14 +1,8 @@
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { message, Upload } from "antd";
+import firebase from "firebase";
 import React from "react";
 import "../App.css";
-import { Upload, message } from "antd";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import firebase from "firebase";
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
 
 function beforeUpload(file) {
   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
@@ -21,7 +15,7 @@ function beforeUpload(file) {
 export default class UploadImage extends React.Component {
   state = {
     loading: false,
-    imageUrl: ""
+    imageUrl: this.props.url || ""
   };
 
   handleUpload = ({ onError, onSuccess, file }) => {

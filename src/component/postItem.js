@@ -188,7 +188,7 @@ function PostItem(props) {
       />
       <br />
       <br />
-      <UploadImage url={postItem.cover} onSetURL={onSetCoverURL} />
+      <UploadImage url={postItem.coverURL} onSetURL={onSetCoverURL} />
       <br />
       <TextArea
         placeholder="Mô tả"

@@ -2,9 +2,9 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Card, Spin } from "antd";
 import firebase from "firebase";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./App.css";
 import PostItem from "./component/postItem";
-import { Link } from "react-router-dom";
 const { Meta } = Card;
 
 function SetPost(props) {
