@@ -1,98 +1,22 @@
-import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Card, Spin } from "antd";
-import firebase from "firebase";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
-import PostItem from "./component/postItem";
-const { Meta } = Card;
+import Post from "./post";
+import SetPost from "./setPost";
 
 function App() {
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-  const [postIndex, setPostIndex] = useState(0);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    firebase
-      .database()
-      .ref("posts")
-      .on("value", snapshot => {
-        const post = snapshot.val();
-        if (post && post.length > 0) setData(post);
-        else setData([{ title: "", cover: "", description: "", sections: [] }]);
-        console.log(post);
-        setLoading(false);
-      });
-  }, []);
-
-  const addNewPost = () => {
-    setPostIndex(data.length);
-    setData([...data, { title: "", cover: "", description: "", sections: [] }]);
-  };
-
-  const deletePost = index => {
-    if (data && data.length > 1) {
-      data.splice(index, 1);
-      setData([...data]);
-      setPostIndex(0);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="App">
-        <Spin indicator={antIcon} size="large" />
-      </div>
-    );
-  }
+  const [index, setIndex] = useState(0);
   return (
-    <div className="App">
-      <div className="leftHalf">
-        {data && data.length > 0 ? (
-          data.map((item, index) => (
-            <div key={index}>
-              <Card
-                style={{ width: "100%" }}
-                cover={
-                  <img
-                    alt="Lỗi hình"
-                    src={item.cover}
-                    width="100%"
-                    height="150"
-                  />
-                }
-              >
-                <Meta title={item.postTitle} description={item.description} />
-              </Card>
-              <br />
-              <div className="btnWrap">
-                <Button type="danger" onClick={() => deletePost(index)}>
-                  Xóa
-                </Button>
-                <Button
-                  type="primary"
-                  style={{ marginLeft: 16 }}
-                  onClick={() => setPostIndex(index)}
-                >
-                  Sửa
-                </Button>
-              </div>
-              <br />
-              <br />
-            </div>
-          ))
-        ) : (
-          <h3>Chưa có bài viết nào</h3>
-        )}
+    <Router>
+      <div>
+        <Route exact path="/">
+          <SetPost onLeadToPost={postIndex => setIndex(postIndex)} />
+        </Route>
+        <Route path={`/${index}`}>
+          <Post index={index} />
+        </Route>
       </div>
-      <div className="rightHalf">
-        <Button type="primary" onClick={() => addNewPost()}>
-          Thêm mới
-        </Button>
-        <h2>Bài số {postIndex + 1}</h2>
-        <PostItem postIndex={postIndex} postItem={data[postIndex]} />
-      </div>
-    </div>
+    </Router>
   );
 }
 

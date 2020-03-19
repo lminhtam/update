@@ -43,7 +43,9 @@ function RenderContent(props) {
         />
       );
     case CONTENT.IMAGE:
-      return <UploadImage />;
+      return (
+        <UploadImage url={props.item.content} onSetURL={onChangeContent} />
+      );
     default:
       return <div />;
   }
@@ -156,7 +158,13 @@ function PostItem(props) {
     setSections([...sections]);
   };
 
+  const onSetCoverURL = url => {
+    setCoverURL(url);
+  };
+
   const savePost = () => {
+    console.log(coverURL);
+    const today = new Date();
     firebase
       .database()
       .ref("posts")
@@ -166,7 +174,7 @@ function PostItem(props) {
         coverURL: coverURL || "",
         description: description || "",
         sections: sections || [],
-        modifiedAt: new Date()
+        modifiedAt: today
       });
   };
 
@@ -180,7 +188,7 @@ function PostItem(props) {
       />
       <br />
       <br />
-      <UploadImage />
+      <UploadImage url={postItem.cover} onSetURL={onSetCoverURL} />
       <br />
       <TextArea
         placeholder="Mô tả"

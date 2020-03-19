@@ -51,3 +51,10 @@
 div {
   width: 100%;
 }
+
+.post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
