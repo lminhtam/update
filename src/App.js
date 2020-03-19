@@ -16,7 +16,7 @@ function App() {
     firebase
       .database()
       .ref("posts")
-      .once("value", snapshot => {
+      .on("value", snapshot => {
         const post = snapshot.val();
         if (post && post.length > 0) setData(post);
         else setData([{ title: "", cover: "", description: "", sections: [] }]);

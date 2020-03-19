@@ -90,7 +90,7 @@ function Title(props) {
 
 function PostItem(props) {
   const { postItem } = props;
-  console.log(postItem)
+  console.log(postItem);
   const [postTitle, setPostTitle] = useState(postItem.postTitle);
   const [coverURL, setCoverURL] = useState(postItem.cover);
   const [description, setDescription] = useState(postItem.description);
