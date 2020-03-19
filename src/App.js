@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import { Card, Button, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import PostItem from "./component/postItem";
+import { Button, Card, Spin } from "antd";
 import firebase from "firebase";
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import PostItem from "./component/postItem";
 const { Meta } = Card;
 
 function App() {
@@ -31,9 +31,11 @@ function App() {
   };
 
   const deletePost = index => {
-    data.splice(index, 1);
-    setData([...data]);
-    setPostIndex(0);
+    if (data && data.length > 1) {
+      data.splice(index, 1);
+      setData([...data]);
+      setPostIndex(0);
+    }
   };
 
   if (loading) {

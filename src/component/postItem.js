@@ -1,20 +1,46 @@
 import { Button, Input } from "antd";
 import firebase from "firebase";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../App.css";
 import { CONTENT } from "../constants/constants";
 import UploadImage from "./uploadImage";
 const { TextArea } = Input;
 
 function RenderContent(props) {
+  const [content, setContent] = useState(props.item.content);
+
+  const onChangeContent = text => {
+    setContent(text);
+    props.item.content = text;
+  };
+
   switch (props.item.type) {
     case CONTENT.CONTENT:
-      return <TextArea placeholder="Nội dung" allowClear onChange={() => {}} />;
+      return (
+        <TextArea
+          placeholder="Nội dung"
+          allowClear
+          value={content}
+          onChange={e => onChangeContent(e.target.value)}
+        />
+      );
     case CONTENT.QUOTE:
-      return <TextArea placeholder="Quote" allowClear onChange={() => {}} />;
+      return (
+        <TextArea
+          placeholder="Quote"
+          allowClear
+          value={content}
+          onChange={e => onChangeContent(e.target.value)}
+        />
+      );
     case CONTENT.YTB:
       return (
-        <Input placeholder="Link youtube" allowClear onChange={() => {}} />
+        <Input
+          placeholder="Link youtube"
+          allowClear
+          value={content}
+          onChange={e => onChangeContent(e.target.value)}
+        />
       );
     case CONTENT.IMAGE:
       return <UploadImage />;
@@ -25,6 +51,13 @@ function RenderContent(props) {
 
 function Title(props) {
   const { inside } = props.item;
+  const [title, setTitle] = useState(props.item.title);
+
+  const onChangeTitle = text => {
+    setTitle(text);
+    props.item.title = text;
+  };
+
   return (
     <div className="titleWrap">
       <div className="delWrap">
@@ -72,7 +105,8 @@ function Title(props) {
       <Input
         placeholder="Đề mục (không có bỏ qua, không cần đánh số)"
         allowClear
-        onChange={() => {}}
+        value={title}
+        onChange={e => onChangeTitle(e.target.value)}
       />
       <br />
       {inside &&
@@ -90,11 +124,17 @@ function Title(props) {
 
 function PostItem(props) {
   const { postItem } = props;
-  console.log(postItem);
-  const [postTitle, setPostTitle] = useState(postItem.postTitle);
-  const [coverURL, setCoverURL] = useState(postItem.cover);
-  const [description, setDescription] = useState(postItem.description);
-  const [sections, setSections] = useState(postItem.sections || []);
+  const [postTitle, setPostTitle] = useState("");
+  const [coverURL, setCoverURL] = useState("");
+  const [description, setDescription] = useState("");
+  const [sections, setSections] = useState([]);
+
+  useEffect(() => {
+    setPostTitle(postItem.postTitle);
+    setCoverURL(postItem.cover);
+    setDescription(postItem.description);
+    setSections(postItem.sections || []);
+  }, [postItem]);
 
   const addSection = () => {
     setSections([
@@ -122,10 +162,11 @@ function PostItem(props) {
       .ref("posts")
       .child(props.postIndex)
       .set({
-        postTitle: postTitle,
-        coverURL: coverURL,
-        description: description,
-        sections: sections
+        postTitle: postTitle || "",
+        coverURL: coverURL || "",
+        description: description || "",
+        sections: sections || [],
+        modifiedAt: new Date()
       });
   };
 
@@ -134,6 +175,7 @@ function PostItem(props) {
       <Input
         placeholder="Tiêu đề"
         allowClear
+        value={postTitle}
         onChange={e => setPostTitle(e.target.value)}
       />
       <br />
@@ -143,6 +185,7 @@ function PostItem(props) {
       <TextArea
         placeholder="Mô tả"
         allowClear
+        value={description}
         onChange={e => setDescription(e.target.value)}
       />
       <br />
