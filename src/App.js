@@ -1,31 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Card, Button } from "antd";
+import { Card, Button, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import PostItem from "./component/postItem";
 import firebase from "firebase";
 const { Meta } = Card;
 
-const dataPost = [
-  {
-    title: "AAAA",
-    cover: "https://nguoinoitieng.tv/images/nnt/96/0/bby1.jpg",
-    description: "BBBBBBBB fnkjskfjkjf ksnfknvkjr jnkncue"
-  },
-  {
-    title: "AAAA",
-    cover: "https://nguoinoitieng.tv/images/nnt/96/0/bby1.jpg",
-    description: "BBBBBBBB fnkjskfjkjf ksnfknvkjr jnkncue"
-  },
-  {
-    title: "AAAA",
-    cover: "https://nguoinoitieng.tv/images/nnt/96/0/bby1.jpg",
-    description: "BBBBBBBB fnkjskfjkjf ksnfknvkjr jnkncue"
-  }
-];
-
 function App() {
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
   const [postIndex, setPostIndex] = useState(0);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     firebase
@@ -33,10 +18,31 @@ function App() {
       .ref("posts")
       .once("value", snapshot => {
         const post = snapshot.val();
-        setData(post);
+        if (post && post.length > 0) setData(post);
+        else setData([{ title: "", cover: "", description: "", sections: [] }]);
         console.log(post);
+        setLoading(false);
       });
   }, []);
+
+  const addNewPost = () => {
+    setPostIndex(data.length);
+    setData([...data, { title: "", cover: "", description: "", sections: [] }]);
+  };
+
+  const deletePost = index => {
+    data.splice(index, 1);
+    setData([...data]);
+    setPostIndex(0);
+  };
+
+  if (loading) {
+    return (
+      <div className="App">
+        <Spin indicator={antIcon} size="large" />
+      </div>
+    );
+  }
   return (
     <div className="App">
       <div className="leftHalf">
@@ -57,9 +63,18 @@ function App() {
                 <Meta title={item.postTitle} description={item.description} />
               </Card>
               <br />
-              <Button type="primary" block onClick={() => setPostIndex(index)}>
-                Sửa
-              </Button>
+              <div className="btnWrap">
+                <Button type="danger" onClick={() => deletePost(index)}>
+                  Xóa
+                </Button>
+                <Button
+                  type="primary"
+                  style={{ marginLeft: 16 }}
+                  onClick={() => setPostIndex(index)}
+                >
+                  Sửa
+                </Button>
+              </div>
               <br />
               <br />
             </div>
@@ -69,9 +84,10 @@ function App() {
         )}
       </div>
       <div className="rightHalf">
-        <Button type="primary" onClick={() => setPostIndex(data.length + 1)}>
+        <Button type="primary" onClick={() => addNewPost()}>
           Thêm mới
         </Button>
+        <h2>Bài số {postIndex + 1}</h2>
         <PostItem postIndex={postIndex} postItem={data[postIndex]} />
       </div>
     </div>

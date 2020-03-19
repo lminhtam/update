@@ -89,10 +89,12 @@ function Title(props) {
 }
 
 function PostItem(props) {
-  const [postTitle, setPostTitle] = useState("");
-  const [coverURL, setCoverURL] = useState("");
-  const [description, setDescription] = useState("");
-  const [sections, setSections] = useState([]);
+  const { postItem } = props;
+  console.log(postItem)
+  const [postTitle, setPostTitle] = useState(postItem.postTitle);
+  const [coverURL, setCoverURL] = useState(postItem.cover);
+  const [description, setDescription] = useState(postItem.description);
+  const [sections, setSections] = useState(postItem.sections || []);
 
   const addSection = () => {
     setSections([
@@ -129,7 +131,6 @@ function PostItem(props) {
 
   return (
     <div>
-      <br />
       <Input
         placeholder="Tiêu đề"
         allowClear
