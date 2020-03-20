@@ -65,11 +65,12 @@ div {
   font-weight: 400;
   color: black;
   align-self: center;
+  text-align: justify;
 }
 
 .postTitle {
   width: 80%;
-  font-size: 1.5em;
+  font-size: 1.8em;
   font-weight: 800;
   color: black;
   margin-top: 1em;
@@ -78,8 +79,8 @@ div {
 
 .description {
   width: 80%;
-  font-size: 1em;
-  font-weight: 40;
+  font-size: 1.2em;
+  font-weight: 400;
   color: gray;
   margin-top: 0.5em;
   text-align: center;
@@ -87,7 +88,7 @@ div {
 
 .sectionTitle {
   width: 70%;
-  font-size: 1.2em;
+  font-size: 1.6em;
   font-weight: 700;
   color: black;
   margin-top: 1em;
@@ -99,4 +100,30 @@ div {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.quote {
+  font-size: 1.5em;
+  font-weight: 600;
+  font-style: italic;
+  color: black;
+  text-align: justify;
+}
+
+.quoteNote {
+  font-size: 3em;
+  font-weight: 800;
+  font-style: italic;
+  color: black;
+  text-align: justify;
+  margin-right: 1em;
+}
+
+.quoteWrap {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 1em;
 }

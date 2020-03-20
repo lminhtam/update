@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { CONTENT } from "./constants/constants";
+import { CONTENT, WINDOW_WIDTH } from "./constants/constants";
 
 function Post(props) {
   const [post, setPost] = useState({});
@@ -16,15 +16,27 @@ function Post(props) {
         );
       case CONTENT.QUOTE:
         return (
-          <p key={index} className="paragraph">
-            {item.content}
-          </p>
+          <div className="quoteWrap">
+            <p className="quoteNote">"</p>
+            <p key={index} className="quote">
+              {item.content}
+            </p>
+          </div>
         );
       case CONTENT.YTB:
         return (
-          <p key={index} className="paragraph">
-            {item.content}
-          </p>
+          <iframe
+            width="60%"
+            height={`${(WINDOW_WIDTH * 0.6 * 9) / 16}`}
+            src={
+              item.content
+                ? item.content
+                : "https://www.youtube.com/embed/ZBut_eGa8Y4"
+            }
+            frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
         );
       case CONTENT.IMAGE:
         return (
