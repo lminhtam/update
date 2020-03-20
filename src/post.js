@@ -42,7 +42,6 @@ function Post(props) {
       .child(props.index)
       .on("value", snapshot => {
         const post = snapshot.val();
-        console.log(post);
         setPost(post);
       });
   }, []);

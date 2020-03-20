@@ -10,8 +10,10 @@ function RenderContent(props) {
   const [content, setContent] = useState(props.item.content);
 
   const onChangeContent = text => {
-    setContent(text);
-    props.item.content = text;
+    if (text && text !== "") {
+      setContent(text);
+      props.item.content = text;
+    }
   };
 
   switch (props.item.type) {
@@ -133,7 +135,7 @@ function PostItem(props) {
 
   useEffect(() => {
     setPostTitle(postItem.postTitle);
-    setCoverURL(postItem.cover);
+    setCoverURL(postItem.coverURL);
     setDescription(postItem.description);
     setSections(postItem.sections || []);
   }, [postItem]);
@@ -159,11 +161,10 @@ function PostItem(props) {
   };
 
   const onSetCoverURL = url => {
-    setCoverURL(url);
+    if (url && url !== "") setCoverURL(url);
   };
 
   const savePost = () => {
-    console.log(coverURL);
     const today = new Date();
     firebase
       .database()

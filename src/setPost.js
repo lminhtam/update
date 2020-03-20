@@ -21,7 +21,6 @@ function SetPost(props) {
         const post = snapshot.val();
         if (post && post.length > 0) setData(post);
         else setData([{ title: "", cover: "", description: "", sections: [] }]);
-        console.log(post);
         setLoading(false);
       });
   }, []);
